@@ -12,6 +12,8 @@
   "dependencies": {
     "canvas": "^2.11.2",
     "express": "^4.18.2",
+    "mqtt": "^5.3.4",
+    "prom-client": "^15.1.0",
     "sharp": "^0.33.1"
   }
 }

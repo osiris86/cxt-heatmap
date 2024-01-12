@@ -2,8 +2,10 @@ import { createHeatmap } from './heatmapGenerator.js'
 import express from 'express'
 import { fileURLToPath } from 'url'
 import path from 'path'
-const __filename = fileURLToPath(import.meta.url)
+import { idMap } from './idMap.js'
+import { startMqttHandler } from './mqttHandler.js'
 
+const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const currentTemperatures = {
@@ -24,6 +26,9 @@ const currentTemperatures = {
   S12: 39,
   T20: 17
 }
+
+startMqttHandler()
+
 const app = express()
 const port = 3000
 
