@@ -200,7 +200,6 @@ TemperatureMap.prototype.setConvexhullPolygon = function (points) {
   //upper.pop()
   //lower.pop()
   this.polygon = lower.concat(upper)
-  console.log(this.polygon)
 }
 
 TemperatureMap.prototype.setPoints = function (arr, width, height) {
