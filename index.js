@@ -2,7 +2,7 @@ import { createHeatmap } from './heatmapGenerator.js'
 import express from 'express'
 import { fileURLToPath } from 'url'
 import path from 'path'
-import { startMqttHandler } from './mqttHandler.js'
+import { preparePrometheus } from './prometheus.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -26,7 +26,7 @@ const currentTemperatures = {
   T20: 17
 }
 
-startMqttHandler()
+//startMqttHandler()
 
 const app = express()
 const port = 3000
@@ -34,6 +34,8 @@ const port = 3000
 app.get('/', (req, res) => {
   res.sendFile('./finished.png', { root: __dirname })
 })
+
+preparePrometheus(app)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
