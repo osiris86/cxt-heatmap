@@ -125,30 +125,26 @@ TemperatureMap.prototype.getPointValue = function (limit, point) {
 
   // From : https://en.wikipedia.org/wiki/Inverse_distance_weighting
 
-  if (TemperatureMap.pointInPolygon(point, this.polygon)) {
-    for (counter = 0; counter < this.points.length; counter = counter + 1) {
-      dis = TemperatureMap.squareDistance(point, this.points[counter])
-      if (dis === 0) {
-        return this.points[counter].value
-      }
-      arr[counter] = [dis, counter]
+  for (counter = 0; counter < this.points.length; counter = counter + 1) {
+    dis = TemperatureMap.squareDistance(point, this.points[counter])
+    if (dis === 0) {
+      return this.points[counter].value
     }
-
-    arr.sort(function (a, b) {
-      return a[0] - b[0]
-    })
-
-    for (counter = 0; counter < limit; counter = counter + 1) {
-      ptr = arr[counter]
-      inv = 1 / Math.pow(ptr[0], pwr)
-      t = t + inv * this.points[ptr[1]].value
-      b = b + inv
-    }
-
-    return t / b
-  } else {
-    return -255
+    arr[counter] = [dis, counter]
   }
+
+  arr.sort(function (a, b) {
+    return a[0] - b[0]
+  })
+
+  for (counter = 0; counter < limit; counter = counter + 1) {
+    ptr = arr[counter]
+    inv = 1 / Math.pow(ptr[0], pwr)
+    t = t + inv * this.points[ptr[1]].value
+    b = b + inv
+  }
+
+  return t / b
 }
 
 TemperatureMap.prototype.setConvexhullPolygon = function (points) {
@@ -161,16 +157,16 @@ TemperatureMap.prototype.setConvexhullPolygon = function (points) {
     return a.y === b.y ? a.x - b.x : a.y - b.y
   })
 
-  this.limits.yMin = points[0].y
-  this.limits.yMax = points[points.length - 1].y
+  this.limits.yMin = 0
+  this.limits.yMax = this.height
 
   // Sort by 'x' to get convex hull polygon and xMin/xMax
   points.sort(function (a, b) {
     return a.x === b.x ? a.y - b.y : a.x - b.x
   })
 
-  this.limits.xMin = points[0].x
-  this.limits.xMax = points[points.length - 1].x
+  this.limits.xMin = 0
+  this.limits.xMax = this.width
 
   // Get convex hull polygon from points sorted by 'x'
   for (i = 0; i < points.length; i = i + 1) {
@@ -201,9 +197,10 @@ TemperatureMap.prototype.setConvexhullPolygon = function (points) {
     upper.push(points[i])
   }
 
-  upper.pop()
-  lower.pop()
+  //upper.pop()
+  //lower.pop()
   this.polygon = lower.concat(upper)
+  console.log(this.polygon)
 }
 
 TemperatureMap.prototype.setPoints = function (arr, width, height) {

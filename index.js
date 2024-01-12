@@ -18,7 +18,7 @@ const currentTemperatures = {
   P5: 18,
   P17: 26,
   Helpdesk8: 22,
-  S12: 22,
+  S12: 39,
   T20: 17
 }
 
@@ -31,6 +31,8 @@ for (const [key, value] of Object.entries(currentTemperatures)) {
   const v = value
   temperaturePoints.push({ x: x, y: y, value: v })
 }
+
+console.log(temperaturePoints)
 
 const canvas = createCanvas(1903, 1124)
 const ctx = canvas.getContext('2d')
