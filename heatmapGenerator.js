@@ -2,6 +2,7 @@ import { TemperatureMap } from './temperatureMap.js'
 import { createCanvas } from 'canvas'
 import sharp from 'sharp'
 import { saalplanMap } from './saalplanMap.js'
+import fs from 'fs'
 
 export const createHeatmap = (currentTemperatures) => {
   const temperaturePoints = []
@@ -22,7 +23,13 @@ export const createHeatmap = (currentTemperatures) => {
     drw.drawPoints(function () {
       sharp('./bestuhlungsplan_cxt25.png')
         .composite([{ input: canvas.toBuffer(), gravity: 'center' }])
-        .toFile('./finished.png')
+        .toFile('./temp.png', (err, info) => {
+          if (!err) {
+            fs.copyFile('./temp.png', './finished.png', (err) => {
+              if (err) throw err
+            })
+          }
+        })
     })
   })
 }
