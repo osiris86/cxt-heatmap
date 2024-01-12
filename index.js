@@ -2,7 +2,6 @@ import { createHeatmap } from './heatmapGenerator.js'
 import express from 'express'
 import { fileURLToPath } from 'url'
 import path from 'path'
-import { idMap } from './idMap.js'
 import { startMqttHandler } from './mqttHandler.js'
 
 const __filename = fileURLToPath(import.meta.url)
