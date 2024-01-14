@@ -3,13 +3,14 @@ import express from 'express'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import { PrometheusHandler } from './prometheusHandler.js'
+import { MqttHandler } from './mqttHandler.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const targetFile = './finished.png'
 
-//startMqttHandler()
+new MqttHandler()
 
 const app = express()
 const port = 3000

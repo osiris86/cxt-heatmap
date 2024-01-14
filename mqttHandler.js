@@ -1,33 +1,40 @@
 import mqtt from 'mqtt'
 import { InfluxDB, Point } from '@influxdata/influxdb-client'
-import { idMap } from './idMap.js'
+import 'dotenv/config'
+import fs from 'fs'
 
-export const startMqttHandler = () => {
-  const influxDB = new InfluxDB({
-    url: 'http://localhost:8086',
-    token:
-      'i3WqaWAoGtY6M2lEk_7c1kipx_Qk0eTIDX3hF1VDOc6mOZjEgTHog3vV5d-OBEdOLv4CRRvXohDvEuEhQjWpeA=='
+const idMapFile = './idMap.json'
+
+export class MqttHandler {
+  idMap
+  influxDB = new InfluxDB({
+    url: process.env.INFLUX_URL,
+    token: process.env.INFLUX_TOKEN
   })
 
-  const client = mqtt.connect('mqtt://broker.hivemq.com')
-  client.on('message', (topic, message) => {
+  constructor() {
+    this.idMap = JSON.parse(fs.readFileSync(idMapFile))
+
+    const client = mqtt.connect(process.env.MQTT_URL)
+    client.on('message', this.handleTemperaturUpdate.bind(this))
+    client.on('connect', () => {
+      console.log('MQTT connected')
+      client.subscribe('cxtTest')
+    })
+    client.on('error', (error) => {
+      console.error(error)
+    })
+  }
+
+  handleTemperaturUpdate(topic, message) {
     const data = JSON.parse(message)
-    console.log(data)
-    const place = idMap[data.id]
-    console.log(idMap)
-    console.log(place)
-    const writeApi = influxDB.getWriteApi('cxt', 'cxt')
+    const place = this.idMap[data.id]
+    const writeApi = this.influxDB.getWriteApi('cxt', 'cxt')
 
     const point = new Point('temperature')
       .tag('place', place)
       .floatField('value', data.temp)
     writeApi.writePoint(point)
     writeApi.close()
-  })
-  client.on('connect', () => {
-    client.subscribe('cxtTest')
-  })
-  client.on('error', (error) => {
-    console.error(error)
-  })
+  }
 }
