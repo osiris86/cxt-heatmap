@@ -1,21 +1,18 @@
 import client from 'prom-client'
-import { InfluxDB } from '@influxdata/influxdb-client'
 import fs from 'fs'
 import 'dotenv/config'
 
 const idMapFile = './idMap.json'
 
 export class PrometheusHandler {
-  influxDB = new InfluxDB({
-    url: process.env.INFLUX_URL,
-    token: process.env.INFLUX_TOKEN
-  })
-
   register = new client.Registry()
 
   metrics = {}
 
-  constructor(app) {
+  influxService
+
+  constructor(app, influxService) {
+    this.influxService = influxService
     this.registerMetrics()
 
     app.get('/metrics', async (req, res) => {
@@ -31,14 +28,9 @@ export class PrometheusHandler {
   }
 
   async queryData() {
-    const queryApi = this.influxDB.getQueryApi('cxt')
-    const fluxQuery =
-      'from(bucket: "cxt") |> range(start: 0) |> filter(fn: (r) => r._measurement == "temperature") |> group(columns: ["place"]) |> last()'
-    for await (const { values, tableMeta } of queryApi.iterateRows(fluxQuery)) {
-      const o = tableMeta.toObject(values)
-      if (o.place) {
-        this.metrics[o.place].set(o._value)
-      }
+    const seatData = await this.influxService.getLatestSeatData()
+    for (const [key, value] of Object.entries(seatData)) {
+      this.metrics[key].set(value)
     }
 
     return await this.register.metrics()
