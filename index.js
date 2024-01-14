@@ -2,7 +2,7 @@ import { createHeatmap } from './heatmapGenerator.js'
 import express from 'express'
 import { fileURLToPath } from 'url'
 import path from 'path'
-import { preparePrometheus } from './prometheus.js'
+import { PrometheusHandler } from './prometheusHandler.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -31,11 +31,11 @@ const currentTemperatures = {
 const app = express()
 const port = 3000
 
+new PrometheusHandler(app)
+
 app.get('/', (req, res) => {
   res.sendFile('./finished.png', { root: __dirname })
 })
-
-preparePrometheus(app)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
