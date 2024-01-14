@@ -1,14 +1,14 @@
 import client from 'prom-client'
 import { InfluxDB } from '@influxdata/influxdb-client'
 import fs from 'fs'
+import 'dotenv/config'
 
 const idMapFile = './idMap.json'
 
 export class PrometheusHandler {
   influxDB = new InfluxDB({
-    url: 'http://localhost:8086',
-    token:
-      'i3WqaWAoGtY6M2lEk_7c1kipx_Qk0eTIDX3hF1VDOc6mOZjEgTHog3vV5d-OBEdOLv4CRRvXohDvEuEhQjWpeA=='
+    url: process.env.INFLUX_URL,
+    token: process.env.INFLUX_TOKEN
   })
 
   register = new client.Registry()
@@ -38,7 +38,6 @@ export class PrometheusHandler {
       const o = tableMeta.toObject(values)
       if (o.place) {
         this.metrics[o.place].set(o._value)
-        console.log('setting metric')
       }
     }
 
@@ -46,7 +45,6 @@ export class PrometheusHandler {
   }
 
   registerMetrics() {
-    console.log('Registering Metrics')
     const idMap = JSON.parse(fs.readFileSync(idMapFile))
     for (const [key, value] of Object.entries(idMap)) {
       if (!this.metrics[value]) {
