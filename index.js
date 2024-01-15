@@ -16,10 +16,15 @@ new MqttHandler(InfluxService.getInstance())
 const app = express()
 const port = 3000
 
-new PrometheusHandler(app, InfluxService.getInstance())
+const prometheusHandler = new PrometheusHandler(InfluxService.getInstance())
 
 app.get('/', (req, res) => {
   res.sendFile(targetFile, { root: __dirname })
+})
+
+app.get('/metrics', async (req, res) => {
+  res.setHeader('Content-Type', prometheusHandler.getContentType())
+  res.send(await prometheusHandler.queryData())
 })
 
 app.listen(port, () => {

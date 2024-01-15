@@ -11,20 +11,19 @@ export class PrometheusHandler {
 
   influxService
 
-  constructor(app, influxService) {
+  constructor(influxService) {
     this.influxService = influxService
     this.registerMetrics()
-
-    app.get('/metrics', async (req, res) => {
-      res.setHeader('Content-Type', this.register.contentType)
-      res.send(await this.queryData())
-    })
 
     fs.watch(idMapFile, (event, filename) => {
       if (filename) {
         this.registerMetrics()
       }
     })
+  }
+
+  getContentType() {
+    return this.register.contentType
   }
 
   async queryData() {
