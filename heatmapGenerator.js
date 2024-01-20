@@ -1,6 +1,5 @@
 import { TemperatureMap } from './temperatureMap.js'
-import { createCanvas } from 'canvas'
-import sharp from 'sharp'
+import { createCanvas, Image } from 'canvas'
 import { saalplanMap } from './saalplanMap.js'
 import fs from 'fs'
 
@@ -32,17 +31,31 @@ export class HeatmapGenerator {
 
     const canvas = createCanvas(1903, 1124)
     const ctx = canvas.getContext('2d')
+    const img = new Image()
     const drw = new TemperatureMap(ctx)
-    drw.setPoints(temperaturePoints, 1903, 1124)
-    drw.drawFull(false, () => {
-      drw.drawPoints(async () => {
-        await sharp(bestuhlungsplan)
-          .composite([{ input: canvas.toBuffer(), gravity: 'center' }])
-          .toFile('./temp.png')
+    img.onload = () => {
+      drw.setPoints(temperaturePoints, 1903, 1124)
+      drw.drawFull(false, () => {
+        drw.drawPoints(async () => {
+          const img2 = new Image()
+          img2.onload = () => {
+            const combinedCanvas = createCanvas(1903, 1124)
+            const combinedCtx = combinedCanvas.getContext('2d')
+            combinedCtx.drawImage(img, 0, 0)
+            combinedCtx.drawImage(img2, 0, 0)
 
-        fs.copyFileSync('./temp.png', this.targetFile)
-        fs.rmSync('./temp.png')
+            const out = fs.createWriteStream('./temp.png')
+            const stream = combinedCanvas.createPNGStream()
+            stream.pipe(out)
+            out.on('finish', () => {
+              fs.copyFileSync('./temp.png', this.targetFile)
+              fs.rmSync('./temp.png')
+            })
+          }
+          img2.src = canvas.toDataURL()
+        })
       })
-    })
+    }
+    img.src = bestuhlungsplan
   }
 }

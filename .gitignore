@@ -2,3 +2,4 @@ node_modules
 temp.png
 finished.png
 .env
+.DS_Store
