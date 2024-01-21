@@ -12,9 +12,6 @@ export class HeatmapGenerator {
     this.influxService = influxService
     this.targetFile = targetFile
     this.createHeatmap()
-    setInterval(() => {
-      this.createHeatmap()
-    }, 5000)
   }
 
   async createHeatmap() {
@@ -50,6 +47,9 @@ export class HeatmapGenerator {
             out.on('finish', () => {
               fs.copyFileSync('./temp.png', this.targetFile)
               fs.rmSync('./temp.png')
+              setTimeout(() => {
+                this.createHeatmap()
+              }, 5000)
             })
           }
           img2.src = canvas.toDataURL()
