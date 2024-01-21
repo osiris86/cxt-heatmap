@@ -92,9 +92,9 @@ TemperatureMap.prototype.getColor = function (levels, value) {
     tmp = 0,
     lim = 0.55,
     min = 22,
-    max = 35,
+    max = 32,
     dif = max - min,
-    lvs = 25
+    lvs = 10
 
   if (val < min) {
     val = min
