@@ -13,13 +13,6 @@ export class PrometheusHandler {
 
   constructor(influxService) {
     this.influxService = influxService
-    this.registerMetrics()
-
-    fs.watch(idMapFile, (event, filename) => {
-      if (filename) {
-        this.registerMetrics()
-      }
-    })
   }
 
   getContentType() {
@@ -35,8 +28,7 @@ export class PrometheusHandler {
     return await this.register.metrics()
   }
 
-  registerMetrics() {
-    const idMap = JSON.parse(fs.readFileSync(idMapFile))
+  registerMetrics(idMap) {
     for (const [key, value] of Object.entries(idMap)) {
       if (!this.metrics[value]) {
         const temperatureMeasurement = new client.Gauge({

@@ -2,9 +2,6 @@ import mqtt from 'mqtt'
 import 'dotenv/config'
 import fs from 'fs'
 
-const idMapFile = './idMap.json'
-const clientId = `mqtt_${Math.random().toString(16).slice(3)}`
-
 export class MqttHandler {
   idMap
 
@@ -12,7 +9,6 @@ export class MqttHandler {
 
   constructor(influxService) {
     this.influxService = influxService
-    this.idMap = JSON.parse(fs.readFileSync(idMapFile))
 
     const client = mqtt.connect(process.env.MQTT_URL, {
       username: process.env.MQTT_USER,
@@ -29,8 +25,17 @@ export class MqttHandler {
   }
 
   handleTemperaturUpdate(topic, message) {
+    if (!this.idMap) {
+      return
+    }
     const data = JSON.parse(message)
     const place = this.idMap[data.id]
-    this.influxService.writeTemperatureData(place, data.temp)
+    if (place) {
+      this.influxService.writeTemperatureData(place, data.temp)
+    }
+  }
+
+  setIdMap(idMap) {
+    this.idMap = idMap
   }
 }

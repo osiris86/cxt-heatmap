@@ -5,13 +5,14 @@ import path from 'path'
 import { PrometheusHandler } from './prometheusHandler.js'
 import { MqttHandler } from './mqttHandler.js'
 import { InfluxService } from './influxService.js'
+import { ConfigService } from './configService.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const targetFile = './finished.png'
 
-new MqttHandler(InfluxService.getInstance())
+const mqttHandler = new MqttHandler(InfluxService.getInstance())
 
 const app = express()
 const port = 3000
@@ -32,3 +33,8 @@ app.listen(port, () => {
 })
 
 new HeatmapGenerator(targetFile, InfluxService.getInstance())
+
+new ConfigService((idMap) => {
+  prometheusHandler.registerMetrics(idMap)
+  mqttHandler.setIdMap(idMap)
+})
