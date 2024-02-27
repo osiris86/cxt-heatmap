@@ -22,7 +22,7 @@ export class PrometheusHandler {
   async queryData() {
     const seatData = await this.influxService.getLatestSeatData()
     for (const [key, value] of Object.entries(seatData)) {
-      this.metrics[key].set(value)
+      this.metrics[key].set(value.value)
     }
 
     return await this.register.metrics()

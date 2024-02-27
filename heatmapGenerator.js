@@ -22,7 +22,7 @@ export class HeatmapGenerator {
       const seatLocation = saalplanMap[key]
       const x = seatLocation.x
       const y = seatLocation.y
-      const v = value
+      const v = value.value
       temperaturePoints.push({ x: x, y: y, value: v })
     }
 

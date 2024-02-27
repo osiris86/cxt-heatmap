@@ -22,7 +22,10 @@ export class InfluxService {
     for await (const { values, tableMeta } of queryApi.iterateRows(fluxQuery)) {
       const o = tableMeta.toObject(values)
       if (o.place) {
-        seatData[o.place] = o._value
+        seatData[o.place] = {
+          value: o._value,
+          timestamp: o._time
+        }
       }
     }
 
