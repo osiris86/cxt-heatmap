@@ -1,8 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { PrometheusService } from './services/prometheus.service';
 import { HeatmapService } from './services/heatmap.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { createReadStream } from 'fs';
 
 @Controller()
 export class AppController {
@@ -23,5 +24,11 @@ export class AppController {
   @Get('/metrics')
   getPrometheusMetrics(): Promise<string> {
     return this.prometheusService.queryData();
+  }
+
+  @Get('/')
+  getHeatmap(@Res() res: Response) {
+    const file = createReadStream('./heatmap.png');
+    file.pipe(res as unknown as NodeJS.WritableStream);
   }
 }
