@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { HeatmapService } from './services/heatmap.service';
+import { HeatmapService } from '../../services/heatmap.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Controller()

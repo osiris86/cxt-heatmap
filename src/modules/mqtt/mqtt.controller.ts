@@ -5,9 +5,9 @@ import {
   MqttContext,
   Payload,
 } from '@nestjs/microservices';
-import { InfluxService } from './services/influx.service';
+import { InfluxService } from '../../services/influx.service';
 import { OnEvent } from '@nestjs/event-emitter';
-import { ID_MAP_FILE } from './helpers/Constants';
+import { ID_MAP_FILE } from '../../helpers/Constants';
 import { readFileSync } from 'fs';
 
 @Injectable()

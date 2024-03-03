@@ -1,6 +1,6 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { PrometheusService } from './services/prometheus.service';
+import { PrometheusService } from '../../services/prometheus.service';
 import { createReadStream } from 'fs';
 
 @Controller()
