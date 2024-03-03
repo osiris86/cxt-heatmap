@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { PrometheusService } from './services/prometheus.service';
 import { InfluxService } from './services/influx.service';
 import { ConfigModule } from '@nestjs/config';
-import { HeatmapService } from './services/heatmap.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigService } from './services/config.service';
@@ -16,12 +15,6 @@ import { ConfigService } from './services/config.service';
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    PrometheusService,
-    InfluxService,
-    HeatmapService,
-    ConfigService,
-  ],
+  providers: [AppService, PrometheusService, InfluxService, ConfigService],
 })
 export class AppModule {}
