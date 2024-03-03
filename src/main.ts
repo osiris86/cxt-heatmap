@@ -3,9 +3,12 @@ import { AppModule } from './modules/app/app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { MqttModule } from './modules/mqtt/mqtt.module';
 
-async function bootstrap() {
+async function bootstrapApp() {
   const app = await NestFactory.create(AppModule);
-  app.listen(3000);
+  await app.listen(3000);
+}
+
+async function bootstrapMqtt() {
   const mqtt = await NestFactory.createMicroservice<MicroserviceOptions>(
     MqttModule,
     {
@@ -19,4 +22,5 @@ async function bootstrap() {
   );
   await mqtt.listen();
 }
-bootstrap();
+bootstrapApp();
+bootstrapMqtt();
