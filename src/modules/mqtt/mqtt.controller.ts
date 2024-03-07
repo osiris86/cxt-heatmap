@@ -39,7 +39,7 @@ export class MqttController {
         seatDataChanged: {
           seat: place,
           value: data.temp,
-          timestamp: new Date(),
+          timestamp: new Date().toISOString(),
         },
       });
     }

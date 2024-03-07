@@ -1,13 +1,13 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class SeatData {
   @Field()
   seat: string;
 
-  @Field((type) => Int)
+  @Field((type) => Float)
   value: number;
 
-  @Field()
+  @Field((type) => String)
   timestamp: Date;
 }
