@@ -1,5 +1,5 @@
 import { Gauge, Registry, register } from 'prom-client';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InfluxService } from 'src/services/influx.service';
 import { ID_MAP_FILE } from 'src/helpers/Constants';
 import { readFileSync } from 'fs';
@@ -7,6 +7,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class PrometheusService {
+  private readonly logger = new Logger(PrometheusService.name);
   private readonly registry: Registry;
 
   private idMap = new Map<string, string>();
@@ -23,7 +24,7 @@ export class PrometheusService {
 
   @OnEvent('idMap.changed')
   private onIdMapChanged(newIdMap: any) {
-    console.log('PrometheusService: idMap changed');
+    this.logger.log('idMap changed: ' + JSON.stringify(newIdMap));
     this.idMap = newIdMap;
     this.registerMetrics();
   }
