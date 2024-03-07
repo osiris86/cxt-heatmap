@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   Ctx,
   MessagePattern,
@@ -12,6 +12,8 @@ import { readFileSync } from 'fs';
 
 @Injectable()
 export class MqttController {
+  private readonly logger = new Logger(MqttController.name);
+
   private idMap = {};
   constructor(private readonly influxService: InfluxService) {}
 
@@ -21,13 +23,13 @@ export class MqttController {
 
   @OnEvent('idMap.changed')
   private onIdMapChanged(newIdMap: any) {
-    console.log('MqttController: idMap changed');
+    this.logger.log('idMap changed: ' + JSON.stringify(newIdMap));
     this.idMap = newIdMap;
   }
 
   @MessagePattern('cxt/temperature')
   handleTemperaturUpdate(@Payload() data: any) {
-    console.log(data);
+    this.logger.log('New sensor data: ' + JSON.stringify(data));
     if (!this.idMap) {
       return;
     }
