@@ -24,6 +24,7 @@ export class InfluxService {
       const o = tableMeta.toObject(values);
       if (o.place) {
         seatData[o.place] = {
+          seat: o.place,
           value: o._value,
           timestamp: o._time,
         };
