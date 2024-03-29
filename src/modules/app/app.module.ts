@@ -21,7 +21,9 @@ import { MqttController } from '../mqtt/mqtt.controller';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      installSubscriptionHandlers: true,
+      subscriptions: {
+        'graphql-ws': true,
+      },
     }),
   ],
   controllers: [AppController, MqttController],

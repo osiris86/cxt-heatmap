@@ -10,6 +10,7 @@ export class SeatDataResolver {
     @Inject('PUB_SUB') private readonly pubSub: PubSub,
     private readonly influxService: InfluxService,
   ) {}
+
   @Subscription((returns) => SeatData)
   seatDataChanged() {
     return this.pubSub.asyncIterator('seatDataChanged');
