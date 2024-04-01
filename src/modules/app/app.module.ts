@@ -8,6 +8,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigService } from '../../services/config.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { SeatDataResolver } from './seatData.resolver';
 import { PubSub } from 'graphql-subscriptions';
@@ -24,6 +25,10 @@ import { MqttController } from '../mqtt/mqtt.controller';
       subscriptions: {
         'graphql-ws': true,
       },
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', '..', 'public'),
+      exclude: ['/png', '/metrics', '/graphql'],
     }),
   ],
   controllers: [AppController, MqttController],

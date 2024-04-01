@@ -12,7 +12,7 @@ export class AppController {
     return this.prometheusService.queryData();
   }
 
-  @Get('/')
+  @Get('/png')
   getHeatmap(@Res() res: Response) {
     const file = createReadStream('./heatmap.png');
     res.setHeader('Content-Type', 'image/png');

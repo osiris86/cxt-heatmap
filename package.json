@@ -32,6 +32,7 @@
     "@nestjs/microservices": "^10.3.3",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^4.0.1",
+    "@nestjs/serve-static": "^4.0.2",
     "canvas": "^2.11.2",
     "graphql": "^16.8.1",
     "graphql-subscriptions": "^2.0.0",
