@@ -4,10 +4,11 @@ import { ConfigModule } from '@nestjs/config';
 import { HeatmapService } from '../../services/heatmap.service';
 import { WorkerController } from './worker.controller';
 import { ScheduleModule } from '@nestjs/schedule';
+import { DiscordService } from 'src/services/discord.service';
 
 @Module({
   imports: [ConfigModule.forRoot(), ScheduleModule.forRoot()],
   controllers: [WorkerController],
-  providers: [InfluxService, HeatmapService],
+  providers: [InfluxService, HeatmapService, DiscordService],
 })
 export class WorkerModule {}

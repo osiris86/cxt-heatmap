@@ -1,19 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InfluxService } from './influx.service';
 import { saalplanMap } from 'src/helpers/saalplanMap';
 import { Canvas, createCanvas, Image } from 'canvas';
 import { TemperatureMap } from 'src/helpers/temperatureMap';
 import { CANVAS_FILE, TARGET_FILE } from 'src/helpers/Constants';
 import fs, { copyFileSync, createWriteStream, readFileSync, rmSync } from 'fs';
+import { SeatData } from 'src/models/seat-data';
 
 @Injectable()
 export class HeatmapService {
   private readonly logger = new Logger(HeatmapService.name);
 
-  constructor(private readonly influxService: InfluxService) {}
-
-  async createHeatmap() {
-    const currentTemperatures = await this.influxService.getLatestSeatData();
+  async createHeatmap(currentTemperatures: Map<String, SeatData>) {
     const temperaturePoints = [];
 
     this.logger.log(
