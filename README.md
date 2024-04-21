@@ -1,73 +1,47 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# CXT Heatmap
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Der geneigte Besucher der [Convention-X-Treme](https://convention-x-treme) LAN-Party in Karlsdorf-Neuthard weiß, dass es vor Ort gerne mal heiß her geht.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+![Besucher der Convention-X-Treme](img/fine.jpg)
 
-## Description
+Um zu analysieren wie sich die Temperaturen über das LAN-Party-Wochenende entwickeln, wurde dieses Projekt geboren. Es besteht insgesamt aus drei Repositories:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- cxt-heatmap (dieses Repository)
+- [cxt-heatmap-fe](https://github.com/osiris86/cxt-heatmap-fe)
+- [cxt-heatmap-sensor](https://github.com/osiris86/cxt-heatmap-sensor)
 
-## Installation
+## CXT Heatmap Backend
 
-```bash
-$ npm install
-```
+Das Backend ist eine auf [NestJS](https://nestjs.com/) basierende Implementierung. Es stellt vier unterschiedliche Endpunkte zur Verfügung:
 
-## Running the app
+1. / - Unter root wird das Frontend bereitgestellt, welches im [cxt-heatmap-fe](https://github.com/osiris86/cxt-heatmap-fe) Repository liegt.
+2. /png - Hier gibt das Backend eine PNG Datei mit der aktuellen Heatmap zurück.
+3. /metrics - Hier gibt der Server Prometheus Informationen zurück
+4. /graphql - Um die Daten für das Frontend bereitszustellen, gibt es auch einen GraphQL Endpunkt, der auch Subscriptions erlaubt. Diese ermöglicht eine dynamische Aktualisierung des Frontends, sobald neue Daten vorliegen
 
-```bash
-# development
-$ npm run start
+### Funktionsweise
 
-# watch mode
-$ npm run start:dev
+#### MQTT
 
-# production mode
-$ npm run start:prod
-```
+Die Sensoren senden ihre Daten per MQTT. Das Backend abonniert das entsprechende MQTT-Topic (cxt/temperature). Wenn neue Daten ankommen, werden diese zusammen mit dem Zeitstempel in eine Influx-Datenbank geschrieben, so dass auch die historischen Daten im Nachgang zur Verfügung stehen. Die Sensoren übertragen dabei die eigene ID sowie die gemessene Temperatur. Die ID wird über eine Konfigurationsdatei (idMap.json) einem Sitzplatz zugeordnet.
 
-## Test
+#### /png
 
-```bash
-# unit tests
-$ npm run test
+Der Worker holt sich alle 30 Sekunden für jeden Sitzplatz die zuletzt gemessenen Temperaturen und überträgt diese auf die Karte. Dabei wurde die (temperatureMap)[https://github.com/optimisme/javascript-temperatureMap] Implementierung verwendet und geringfürig angepasst. Die Anpassungen beinhalten:
 
-# e2e tests
-$ npm run test:e2e
+- Farben zum Temperaturbereich
+- Farbbereich wird bis zum Bildrand gemalt
 
-# test coverage
-$ npm run test:cov
-```
+Die fertig erstellte Karte wird als png-Datei im Dateisystem abgelegt und der /png-Endpunkt spielt diese aus. Der Endpunkt ist bspw. für einen Discord-Bot gedacht, der ggf. vom CXT-Team noch entwickelt wird.
 
-## Support
+#### /metrics
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Für jeden Platz, welcher in der Konfigurationsdatei (idMap.json) konfiguriert ist, erstellt der Prometheus-Service eine Metric. Unter dem o.g. Endpunkt stellt das Backend dann einen Prometheus-Endpunkt bereit, mit den zuletzt gemessenen Daten an den jeweiligen Plätzen.
 
-## Stay in touch
+#### /graphql
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Mittels Apollo wird ein GraphQL Endpunkt bereitgestellt, der zum Einen über ein Query die Abfrage der aktuell gemessenen Temperaturen erlaubt und zum Anderen eine Subscription-Abfrage zur Verfügung stellt, die den Client über Temperaturveränderungen an den Plätzen informiert. Dieser Entpunkt wird vom [Frontend](https://github.com/osiris86/cxt-heatmap-fe) verwendet.
 
-## License
+#### Discord Bot
 
-Nest is [MIT licensed](LICENSE).
+Das Backend beinhaltet auch einen Discord-Bot, welcher eine DM versendet, sobald ein Sensor seit mehr als 15 Minuten keine Daten mehr gesendet hat. Sobald der Sensor wieder Daten sendet, wird ebenfalls eine Information per Discord-DM versendet.
