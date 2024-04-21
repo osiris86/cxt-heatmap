@@ -2,7 +2,9 @@
 
 Der geneigte Besucher der [Convention-X-Treme](https://convention-x-treme) LAN-Party in Karlsdorf-Neuthard weiß, dass es vor Ort gerne mal heiß her geht.
 
-![Besucher der Convention-X-Treme](img/fine.jpg)
+<p align="center">
+<img src="img/fine.jpg" alt="Besucher der Convention-X-Treme" width="50%" />
+</p>
 
 Um zu analysieren wie sich die Temperaturen über das LAN-Party-Wochenende entwickeln, wurde dieses Projekt geboren. Es besteht insgesamt aus drei Repositories:
 
