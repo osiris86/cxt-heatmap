@@ -12,6 +12,10 @@ Um zu analysieren wie sich die Temperaturen über das LAN-Party-Wochenende entwi
 - [cxt-heatmap-fe](https://github.com/osiris86/cxt-heatmap-fe)
 - [cxt-heatmap-sensor](https://github.com/osiris86/cxt-heatmap-sensor)
 
+<p align="center">
+<img src="img/example.png" alt="Heatmap Beispiel" />
+</p>
+
 ## CXT Heatmap Backend
 
 Das Backend ist eine auf [NestJS](https://nestjs.com/) basierende Implementierung. Es stellt vier unterschiedliche Endpunkte zur Verfügung:
