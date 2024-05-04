@@ -21,5 +21,7 @@ COPY . .
 # Creates a "dist" folder with the production build
 RUN npm run build
 
+RUN chmod +x start.sh
+
 # Start the server using the production build
-CMD ["entrypoint.sh"]
+CMD ["./start.sh"]
