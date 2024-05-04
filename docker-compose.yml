@@ -9,6 +9,8 @@ services:
       - MQTT_URL=mqtt://mqtt:1883
       - MQTT_USER=cxt
       - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - DISCORD_USER=${DISCORD_USER}
     ports:
       - 3000:3000
     depends_on:
