@@ -22,4 +22,4 @@ COPY . .
 RUN npm run build
 
 # Start the server using the production build
-CMD ["/bin/bash", "-c", "node dist/main.js;node dist/worker.js"]
+CMD ["entrypoint.sh"]
