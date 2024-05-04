@@ -9,6 +9,19 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Frontend
+        uses: actions/checkout@v4
+        with:
+          repository: 'osiris86/cxt-heatmap-fe'
+          path: 'frontend'
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm ci
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up QEMU
@@ -20,6 +33,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: copy file
+        uses: canastro/copy-file-action@master
+        with:
+          source: 'frontend/dist'
+          target: 'public'
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
