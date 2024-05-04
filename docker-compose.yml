@@ -1,0 +1,36 @@
+name: cxt-heatmap
+
+services:
+  web-backend:
+    image: michaelschmidt123/cxt-heatmap:latest
+    environment:
+      - INFLUX_URL=http://influxdb:8086
+      - INFLUX_TOKEN=${INFLUX_TOKEN}
+      - MQTT_URL=mqtt://mqtt:1883
+      - MQTT_USER=cxt
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+    ports:
+      - 3000:3000
+    depends_on:
+      - influxdb
+      - mqtt
+    restart: always
+
+  influxdb:
+    image: influxdb:2.7.4
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUX_USERNAME}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUX_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUX_TOKEN}
+      - DOCKER_INFLUXDB_INIT_BUCKET=cxt
+      - DOCKER_INFLUXDB_INIT_ORG=cxt
+    restart: always
+
+  mqtt:
+    image: eclipse-mosquitto:2.0.18
+    ports:
+      - 1883:1883
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto.passwd:/mosquitto/config/mosquitto.passwd:ro
