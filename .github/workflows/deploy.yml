@@ -33,12 +33,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: copy file
-        uses: canastro/copy-file-action@master
-        with:
-          source: 'frontend/dist'
-          target: 'public'
-          flags: '-r'
+      - name: Copy and delete frontend
+        run: |
+          cp -r frontend/dist public
+          rm -rf frontend
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
