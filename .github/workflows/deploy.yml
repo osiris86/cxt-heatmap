@@ -25,4 +25,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: cxt-heatmap:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cxt-heatmap:latest
