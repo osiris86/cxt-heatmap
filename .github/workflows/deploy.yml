@@ -38,6 +38,7 @@ jobs:
         with:
           source: 'frontend/dist'
           target: 'public'
+          flags: '-r'
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
