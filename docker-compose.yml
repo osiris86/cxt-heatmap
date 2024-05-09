@@ -12,7 +12,7 @@ services:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - DISCORD_USER=${DISCORD_USER}
     ports:
-      - 3000:3000
+      - 8080:3000
     depends_on:
       - influxdb
       - mqtt

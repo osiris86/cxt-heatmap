@@ -12,6 +12,10 @@ type Query {
   currentTemperatureData: [SeatData!]!
 }
 
+type Mutation {
+  login(password: String!): String!
+}
+
 type Subscription {
   seatDataChanged: SeatData!
 }

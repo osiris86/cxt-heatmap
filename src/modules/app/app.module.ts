@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { PrometheusService } from '../../services/prometheus.service';
 import { InfluxService } from '../../services/influx.service';
-import { ConfigModule } from '@nestjs/config';
+import {
+  ConfigModule,
+  ConfigService as NestConfigService,
+} from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigService } from '../../services/config.service';
@@ -13,10 +16,12 @@ import { join } from 'path';
 import { SeatDataResolver } from './seatData.resolver';
 import { PubSub } from 'graphql-subscriptions';
 import { MqttController } from '../mqtt/mqtt.controller';
+import { AuthenticationResolver } from './authentication.resolver';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -30,6 +35,14 @@ import { MqttController } from '../mqtt/mqtt.controller';
       rootPath: join(__dirname, '..', '..', '..', 'public'),
       exclude: ['/png', '/metrics', '/graphql'],
     }),
+    JwtModule.registerAsync({
+      useFactory: async (configService: NestConfigService) => ({
+        global: true,
+        secret: configService.get('JWT_SECRET'),
+        signOptions: { expiresIn: '600s' },
+      }),
+      inject: [NestConfigService],
+    }),
   ],
   controllers: [AppController, MqttController],
   providers: [
@@ -41,6 +54,7 @@ import { MqttController } from '../mqtt/mqtt.controller';
     InfluxService,
     ConfigService,
     SeatDataResolver,
+    AuthenticationResolver,
   ],
 })
 export class AppModule {}
