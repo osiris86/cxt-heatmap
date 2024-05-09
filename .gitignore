@@ -40,3 +40,6 @@ heatmap.png
 public/
 mosquitto.passwd
 mosquitto.conf
+
+influxconfig/
+influxdata/
