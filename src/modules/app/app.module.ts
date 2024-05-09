@@ -18,6 +18,7 @@ import { PubSub } from 'graphql-subscriptions';
 import { MqttController } from '../mqtt/mqtt.controller';
 import { AuthenticationResolver } from './authentication.resolver';
 import { JwtModule } from '@nestjs/jwt';
+import { ConfigResolver } from './config.resolver';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { JwtModule } from '@nestjs/jwt';
     ConfigService,
     SeatDataResolver,
     AuthenticationResolver,
+    ConfigResolver,
   ],
 })
 export class AppModule {}

@@ -10,6 +10,7 @@ type SeatData {
 
 type Query {
   currentTemperatureData: [SeatData!]!
+  getCurrentConfig: String!
 }
 
 type Mutation {
