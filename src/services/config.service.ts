@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { readFileSync, watch } from 'fs';
+import { readFileSync, watch, writeFileSync } from 'fs';
 import { ID_MAP_FILE } from 'src/helpers/Constants';
 
 @Injectable()
@@ -18,6 +18,15 @@ export class ConfigService {
     setTimeout(() => {
       this.readConfigFile();
     }, 1000);
+  }
+
+  getCurrentConfig(): any {
+    const contents = readFileSync(ID_MAP_FILE);
+    return JSON.parse(contents.toString());
+  }
+
+  saveConfig(newConfig: any) {
+    writeFileSync(ID_MAP_FILE, JSON.stringify(newConfig));
   }
 
   private readConfigFile() {

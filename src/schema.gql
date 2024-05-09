@@ -8,13 +8,20 @@ type SeatData {
   timestamp: String!
 }
 
+type ConfigElement {
+  id: String!
+  seat: String!
+}
+
 type Query {
   currentTemperatureData: [SeatData!]!
-  getCurrentConfig: String!
+  currentConfig: [ConfigElement!]!
 }
 
 type Mutation {
   login(password: String!): String!
+  addConfigElement(seat: String!, id: String!): [ConfigElement!]!
+  removeConfigElement(id: String!): [ConfigElement!]!
 }
 
 type Subscription {
