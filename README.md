@@ -6,11 +6,12 @@ Der geneigte Besucher der [Convention-X-Treme](https://convention-x-treme) LAN-P
 <img src="img/fine.jpg" alt="Besucher der Convention-X-Treme" width="50%" />
 </p>
 
-Um zu analysieren wie sich die Temperaturen über das LAN-Party-Wochenende entwickeln, wurde dieses Projekt geboren. Es besteht insgesamt aus drei Repositories:
+Um zu analysieren wie sich die Temperaturen über das LAN-Party-Wochenende entwickeln, wurde dieses Projekt geboren. Es besteht insgesamt aus vier Repositories:
 
 - cxt-heatmap (dieses Repository)
 - [cxt-heatmap-fe](https://github.com/osiris86/cxt-heatmap-fe)
 - [cxt-heatmap-sensor](https://github.com/osiris86/cxt-heatmap-sensor)
+- [cxt-heatmap-data](https://github.com/osiris86/cxt-heatmap-data)
 
 <p align="center">
 <img src="img/example.png" alt="Heatmap Beispiel" />
