@@ -1,3 +1,5 @@
+import Jimp from 'jimp';
+
 class Point {
   x: number;
   y: number;
@@ -35,7 +37,7 @@ export class TemperatureMap {
     this.setConvexhullPolygon();
   }
 
-  drawFull() {
+  drawFull(): ColorData[][] {
     const data: ColorData[][] = new Array(this.width);
     for (let x = 0; x < this.width; x++) {
       data[x] = new Array(this.height);
@@ -43,6 +45,7 @@ export class TemperatureMap {
         const pointValue = this.getPointValue(x, y);
         if (pointValue !== -255) {
           const color = this.getColor(pointValue);
+          data[x][y] = new ColorData();
           data[x][y].red = color.red;
           data[x][y].green = color.green;
           data[x][y].blue = color.blue;
@@ -50,6 +53,8 @@ export class TemperatureMap {
         }
       }
     }
+
+    return data;
   }
 
   private getPointValue(x: number, y: number): number {
@@ -154,6 +159,9 @@ export class TemperatureMap {
     colorData.red = (red * 255) | 0;
     colorData.green = (green * 255) | 0;
     colorData.blue = (blue * 255) | 0;
+    if (colorData.red > 255) colorData.red = 255;
+    if (colorData.green > 255) colorData.green = 255;
+    if (colorData.blue > 255) colorData.blue = 255;
     return colorData;
   }
 

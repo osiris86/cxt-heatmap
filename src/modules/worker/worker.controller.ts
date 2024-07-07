@@ -4,6 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { DiscordService } from 'src/services/discord.service';
 import { InfluxService } from 'src/services/influx.service';
 import { saalplanMap } from 'src/helpers/saalplanMap';
+import { SeatData } from 'src/models/seat-data';
 
 @Controller()
 export class WorkerController {
@@ -22,6 +23,9 @@ export class WorkerController {
   @Cron(CronExpression.EVERY_30_SECONDS)
   async updateHeatmap() {
     const currentTemperatures = await this.influxService.getLatestSeatData();
+
+    console.log(currentTemperatures);
+
     this.heatmapService.createHeatmap(currentTemperatures);
 
     for (const seatData of Object.values(currentTemperatures)) {

@@ -1,10 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { saalplanMap } from 'src/helpers/saalplanMap';
-import { Canvas, createCanvas, Image } from 'canvas';
-import { TemperatureMap } from 'src/helpers/temperatureMap';
+import { TemperatureMap } from 'src/helpers/newTemperatureMap';
+import { TemperatureMap as OldTemperatureMap } from 'src/helpers/TemperatureMap';
 import { CANVAS_FILE, TARGET_FILE } from 'src/helpers/Constants';
 import fs, { copyFileSync, createWriteStream, readFileSync, rmSync } from 'fs';
 import { SeatData } from 'src/models/seat-data';
+import Jimp from 'jimp';
+import { createCanvas } from 'canvas';
 
 @Injectable()
 export class HeatmapService {
@@ -26,14 +28,38 @@ export class HeatmapService {
       temperaturePoints.push({ x: x, y: y, value: v });
     }
 
+    const temperatureMap = new TemperatureMap(1124, 1903);
+    temperatureMap.setPoints(temperaturePoints);
+    const colorData = temperatureMap.drawFull();
+
     const canvas = createCanvas(1903, 1124);
     const ctx = canvas.getContext('2d');
-    const img = new Image();
-    const drw = new TemperatureMap(ctx);
-    img.onload = () => {
-      drw.setPoints(temperaturePoints, 1903, 1124);
-      drw.drawFull(false, () => {
-        drw.drawPoints(async () => {
+    const drw = new OldTemperatureMap(ctx);
+    drw.setPoints(temperaturePoints, 1903, 1124);
+    drw.drawFull();
+
+    const jimp = new Jimp(1903, 1124);
+
+    for (let x = 0; x < 1903; x++) {
+      console.log('X' + x);
+      for (let y = 0; y < 1124; y++) {
+        const color = colorData[x][y];
+        jimp.setPixelColor(
+          Jimp.rgbaToInt(
+            color.red,
+            color.green,
+            color.blue,
+            color.transparency,
+          ),
+          x,
+          y,
+        );
+      }
+    }
+
+    await jimp.writeAsync(TARGET_FILE);
+
+    /*drw.drawPoints(async () => {
           const img2 = new Image();
           img2.onload = () => {
             const combinedCanvas = createCanvas(1903, 1124);
@@ -50,9 +76,6 @@ export class HeatmapService {
             });
           };
           img2.src = canvas.toDataURL();
-        });
-      });
-    };
-    img.src = readFileSync(CANVAS_FILE);
+        });*/
   }
 }
