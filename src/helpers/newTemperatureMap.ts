@@ -1,5 +1,3 @@
-import Jimp from 'jimp';
-
 class Point {
   x: number;
   y: number;
@@ -15,7 +13,6 @@ class ColorData {
 
 export class TemperatureMap {
   private points: Point[];
-  private polygon: Point[];
   private readonly limits = {
     xMin: 0,
     xMax: 0,
@@ -25,7 +22,6 @@ export class TemperatureMap {
 
   private readonly minTemp = 22;
   private readonly maxTemp = 32;
-  private readonly numLevels = 10;
 
   constructor(
     private readonly height: number,
@@ -123,8 +119,6 @@ export class TemperatureMap {
       }
       upper.push(this.points[i]);
     }
-
-    this.polygon = lower.concat(upper);
   }
 
   private crossProduct(o: Point, a: Point, b: Point): number {
