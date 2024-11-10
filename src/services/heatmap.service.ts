@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { saalplanMap } from 'src/helpers/saalplanMap';
 import { TemperatureMap } from 'src/helpers/temperatureMap';
 import { CANVAS_FILE, TARGET_FILE } from 'src/helpers/Constants';
-import fs, { copyFileSync, createWriteStream, readFileSync, rmSync } from 'fs';
 import { SeatData } from 'src/models/seat-data';
 import Jimp from 'jimp';
 
@@ -49,6 +48,8 @@ export class HeatmapService {
       }
     }
 
-    await jimp.writeAsync(TARGET_FILE);
+    const bestuhlungsplan = await Jimp.read(CANVAS_FILE);
+    await bestuhlungsplan.composite(jimp, 0, 0);
+    await bestuhlungsplan.writeAsync(TARGET_FILE);
   }
 }
