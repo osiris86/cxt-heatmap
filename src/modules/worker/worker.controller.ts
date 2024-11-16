@@ -27,7 +27,7 @@ export class WorkerController {
 
     console.log(currentTemperatures);
 
-    await this.heatmapDrawer.drawHeatmap(
+    await this.heatmapDrawer.drawHeatmapFile(
       currentTemperatures,
       saalplanMap,
       CANVAS_FILE,
