@@ -25,16 +25,16 @@ export class WorkerController {
   async updateHeatmap() {
     const currentTemperatures = await this.influxService.getLatestSeatData();
 
-    console.log(currentTemperatures);
+    const temperatures = Object.values(currentTemperatures);
 
     await this.heatmapDrawer.drawHeatmapFile(
-      currentTemperatures,
+      temperatures,
       saalplanMap,
       CANVAS_FILE,
       TARGET_FILE,
     );
 
-    for (const seatData of Object.values(currentTemperatures)) {
+    for (const seatData of temperatures) {
       if (
         new Date(seatData.timestamp).getTime() <
         Date.now() - 15 * 60 * 1000
