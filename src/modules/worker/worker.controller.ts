@@ -1,18 +1,19 @@
 import { Controller } from '@nestjs/common';
-import { HeatmapService } from '../../services/heatmap.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { DiscordService } from 'src/services/discord.service';
 import { InfluxService } from 'src/services/influx.service';
 import { saalplanMap } from 'src/helpers/saalplanMap';
-import { SeatData } from 'src/models/seat-data';
+import { CxtHeatmapDrawer } from 'cxt-heatmap-drawer';
+import { CANVAS_FILE, TARGET_FILE } from 'src/helpers/Constants';
 
 @Controller()
 export class WorkerController {
   currentlyOffline = new Set<String>();
 
+  private readonly heatmapDrawer = new CxtHeatmapDrawer();
+
   constructor(
     private readonly influxService: InfluxService,
-    private readonly heatmapService: HeatmapService,
     private readonly discordService: DiscordService,
   ) {}
 
@@ -26,7 +27,12 @@ export class WorkerController {
 
     console.log(currentTemperatures);
 
-    this.heatmapService.createHeatmap(currentTemperatures);
+    await this.heatmapDrawer.drawHeatmap(
+      currentTemperatures,
+      saalplanMap,
+      CANVAS_FILE,
+      TARGET_FILE,
+    );
 
     for (const seatData of Object.values(currentTemperatures)) {
       if (

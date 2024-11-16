@@ -42,7 +42,8 @@
     "mqtt": "^5.3.6",
     "prom-client": "^15.1.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "cxt-heatmap-drawer": "file:../cxt-heatmap-drawer/cxt-heatmap-drawer-1.0.0.tgz"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
