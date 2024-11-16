@@ -56,53 +56,58 @@ export class HeatmapService {
     circleColor.blue = 255;
     circleColor.transparency = 255;
 
+    const font = await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK);
+
     for (const temperature of temperaturePoints) {
-      this.drawCircle(
+      this.drawRectangle(
         bestuhlungsplan,
         temperature.x,
         temperature.y,
-        10,
+        20,
         circleColor,
+      );
+      const tempToDraw = Math.round(temperature.value).toString();
+      const textWidth = Jimp.measureText(font, tempToDraw);
+      const textHeight = Jimp.measureTextHeight(font, tempToDraw, textWidth);
+      bestuhlungsplan.print(
+        font,
+        temperature.x - textWidth / 2,
+        temperature.y - textHeight / 2,
+        tempToDraw,
       );
     }
 
     await bestuhlungsplan.writeAsync(TARGET_FILE);
   }
 
-  private drawCircle(
+  private drawRectangle(
     currentImage: Jimp,
     xCenter: number,
     yCenter: number,
-    radius: number,
+    borderLength: number,
     color: ColorData,
   ) {
-    // https://stackoverflow.com/a/54175151
-    for (let x = xCenter - radius - 1; x < xCenter + radius - 1; x++) {
-      for (let y = yCenter - radius - 1; y < yCenter + radius - 1; y++) {
-        const distance = this.distanceFromCenter(
-          radius,
-          x - xCenter + radius,
-          y - yCenter + radius,
+    for (
+      let x = xCenter - borderLength / 2;
+      x < xCenter + borderLength / 2;
+      x++
+    ) {
+      for (
+        let y = yCenter - borderLength / 2;
+        y < yCenter + borderLength / 2;
+        y++
+      ) {
+        currentImage.setPixelColor(
+          Jimp.rgbaToInt(
+            color.red,
+            color.green,
+            color.blue,
+            color.transparency,
+          ),
+          x,
+          y,
         );
-        if (distance < radius) {
-          currentImage.setPixelColor(
-            Jimp.rgbaToInt(
-              color.red,
-              color.green,
-              color.blue,
-              color.transparency,
-            ),
-            x,
-            y,
-          );
-        } else {
-        }
       }
     }
-  }
-
-  private distanceFromCenter(radius: number, x: number, y: number): number {
-    console.log(x + ',' + y);
-    return Math.hypot(radius - x, radius - y);
   }
 }
