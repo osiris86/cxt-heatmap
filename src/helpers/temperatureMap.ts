@@ -4,7 +4,7 @@ class Point {
   value: number;
 }
 
-class ColorData {
+export class ColorData {
   red: number;
   green: number;
   blue: number;
