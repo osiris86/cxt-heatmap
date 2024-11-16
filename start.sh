@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Start the first process
 node dist/main.js &
 

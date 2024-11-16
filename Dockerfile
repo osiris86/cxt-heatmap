@@ -1,16 +1,11 @@
 # Base image
-FROM node:18
-
-RUN apt-get update 
-RUN apt-get install -y libsdl-pango-dev
+FROM node:18-alpine as builder
 
 # Create app directory
 WORKDIR /usr/src/app
 
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
-
-COPY public ./
 
 # Install app dependencies
 RUN npm install
@@ -21,9 +16,22 @@ COPY . .
 # Creates a "dist" folder with the production build
 RUN npm run build
 
+
+
+FROM node:18-alpine
+
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app/dist ./dist
+COPY package*.json ./
+RUN npm install --only=production
+COPY start.sh ./
+COPY public ./public
+COPY idMap.json ./
+COPY bestuhlungsplan_cxt25.png ./
+
 RUN chmod +x start.sh
 
 EXPOSE 3000
 
 # Start the server using the production build
-CMD ["./start.sh"]
+CMD ["/usr/src/app/start.sh"]
