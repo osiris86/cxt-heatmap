@@ -17,21 +17,16 @@ COPY . .
 RUN npm run build
 
 
-
 FROM node:18-alpine
 
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/dist ./dist
 COPY package*.json ./
 RUN npm install --only=production
-COPY start.sh ./
 COPY public ./public
 COPY idMap.json ./
-COPY bestuhlungsplan_cxt25.png ./
-
-RUN chmod +x start.sh
 
 EXPOSE 3000
 
 # Start the server using the production build
-CMD ["/usr/src/app/start.sh"]
+CMD ["node", "dist/main.js"]

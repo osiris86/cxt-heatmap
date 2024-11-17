@@ -19,6 +19,7 @@ import { MqttController } from '../mqtt/mqtt.controller';
 import { AuthenticationResolver } from './authentication.resolver';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigResolver } from './config.resolver';
+import { DiscordService } from 'src/services/discord.service';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { ConfigResolver } from './config.resolver';
     SeatDataResolver,
     AuthenticationResolver,
     ConfigResolver,
+    DiscordService,
   ],
 })
 export class AppModule {}
