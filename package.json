@@ -38,9 +38,7 @@
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.16.0",
     "mqtt": "^5.3.6",
-    "prom-client": "^15.1.0",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "prom-client": "^15.1.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
