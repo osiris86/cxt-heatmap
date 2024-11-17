@@ -20,6 +20,8 @@ import { AuthenticationResolver } from './authentication.resolver';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigResolver } from './config.resolver';
 import { DiscordService } from 'src/services/discord.service';
+import { HttpModule } from '@nestjs/axios';
+import { WeatherService } from 'src/services/weather.service';
 
 @Module({
   imports: [
@@ -45,6 +47,7 @@ import { DiscordService } from 'src/services/discord.service';
       }),
       inject: [NestConfigService],
     }),
+    HttpModule,
   ],
   controllers: [AppController, MqttController],
   providers: [
@@ -59,6 +62,7 @@ import { DiscordService } from 'src/services/discord.service';
     AuthenticationResolver,
     ConfigResolver,
     DiscordService,
+    WeatherService,
   ],
 })
 export class AppModule {}

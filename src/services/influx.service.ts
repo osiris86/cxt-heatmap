@@ -7,7 +7,7 @@ import { SeatData } from 'src/models/seat-data';
 export class InfluxService {
   private readonly influxDB;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(configService: ConfigService) {
     this.influxDB = new InfluxDB({
       url: configService.get('INFLUX_URL'),
       token: configService.get('INFLUX_TOKEN'),
