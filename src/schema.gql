@@ -20,6 +20,7 @@ type Query {
 
 type Mutation {
   login(password: String!): String!
+  setNetatmoRefreshToken(token: String!): String!
   addConfigElement(seat: String!, id: String!): [ConfigElement!]!
   removeConfigElement(id: String!): [ConfigElement!]!
 }

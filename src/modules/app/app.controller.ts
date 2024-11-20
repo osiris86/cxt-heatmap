@@ -48,9 +48,11 @@ export class AppController {
   @Cron(CronExpression.EVERY_5_MINUTES)
   async logOutsideTemperature() {
     const outsideData = await this.weatherService.getTemperatureData();
-    await this.influxService.writeTemperatureData(
-      'Outside',
-      outsideData.temperature,
-    );
+    if (outsideData) {
+      await this.influxService.writeTemperatureData(
+        'Outside',
+        outsideData.temperature,
+      );
+    }
   }
 }

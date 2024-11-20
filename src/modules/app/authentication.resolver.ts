@@ -22,4 +22,12 @@ export class AuthenticationResolver {
     const payload = { sub: 'admin', username: 'admin' };
     return await this.jwtService.signAsync(payload);
   }
+
+  @Mutation(() => String)
+  async setNetatmoRefreshToken(
+    @Args({ name: 'token', type: () => String }) token: String,
+  ) {
+    await this.configService.set('NETATMO_REFRESH_TOKEN', token);
+    return token;
+  }
 }
