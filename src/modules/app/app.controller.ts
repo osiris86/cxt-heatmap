@@ -1,9 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Inject } from '@nestjs/common';
 import { PrometheusService } from '../../services/prometheus.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InfluxService } from 'src/services/influx.service';
 import { DiscordService } from 'src/services/discord.service';
 import { WeatherService } from 'src/services/weather.service';
+import { PubSub } from 'graphql-subscriptions';
 
 @Controller()
 export class AppController {
@@ -14,6 +15,7 @@ export class AppController {
     private readonly influxService: InfluxService,
     private readonly discordService: DiscordService,
     private readonly weatherService: WeatherService,
+    @Inject('PUB_SUB') private readonly pubSub: PubSub,
   ) {}
 
   @Get('/metrics')
@@ -53,6 +55,13 @@ export class AppController {
         'Outside',
         outsideData.temperature,
       );
+      this.pubSub.publish('seatDataChanged', {
+        seatDataChanged: {
+          seat: 'Outside',
+          value: outsideData.temperature,
+          timestamp: new Date().toISOString(),
+        },
+      });
     }
   }
 }
