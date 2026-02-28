@@ -43,3 +43,5 @@ mosquitto.conf
 
 influxconfig/
 influxdata/
+
+traefik/

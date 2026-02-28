@@ -16,12 +16,18 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - NETATMO_CLIENT_ID=${NETATMO_CLIENT_ID}
       - NETATMO_CLIENT_SECRET=${NETATMO_CLIENT_SECRET}
-    ports:
-      - 8080:3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cxt.rule=Host(`${DOMAIN_NAME}`)"
+      - "traefik.http.routers.cxt.entrypoints=websecure"
+      - "traefik.http.routers.cxt.tls.certresolver=myresolver"
+      - "traefik.http.services.cxt.loadbalancer.server.port=3000"
     depends_on:
       - influxdb
       - mqtt
     restart: always
+    networks:
+      - traefik
 
   influxdb:
     image: influxdb:2.7.4
@@ -35,6 +41,8 @@ services:
     volumes:
       - ./influxdata:/var/lib/influxdb2
       - ./influxconfig:/etc/influxdb2
+    networks:
+      - traefik
 
   mqtt:
     image: eclipse-mosquitto:2.0.18
@@ -43,3 +51,26 @@ services:
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - ./mosquitto.passwd:/mosquitto/config/mosquitto.passwd:ro
+    networks:
+      - traefik
+
+  traefik:
+    image: "traefik:2.3.7"
+    container_name: "traefik"
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+      #- CF_API_EMAIL=${CF_API_EMAIL}
+    volumes:
+      - ./traefik/config:/etc/traefik
+      - ./traefik/certs:/certs
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik
+    depends_on:
+      - web-backend
+
+networks:
+  traefik:
